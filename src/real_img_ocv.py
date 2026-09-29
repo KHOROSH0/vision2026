@@ -51,6 +51,7 @@ edge_kern_h = np.array([
 image = cv2.imread("../resources/kidsnoise.bmp")
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 filtered = cv2.medianBlur(gray, 3)
+# filtered = cv2.GaussianBlur(gray, (5,5),1.0)
 filtered_f = filtered.astype(np.float32)
 # edges_v = cv2.filter2D(filtered_f, -1, kernel=edge_kern_v).astype(np.float32)
 # edges_h = cv2.filter2D(filtered_f, -1, kernel=edge_kern_h).astype(np.float32)

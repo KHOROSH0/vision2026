@@ -19,25 +19,33 @@ def non_maximum_suppression(magnitude, angle):
             if a < 22.5 or a >= 157.5:
                 m1 = magnitude[y, x - 1]
                 m2 = magnitude[y, x + 1]
+                # Keep only local maxima
+                if m > m1 and m >= m2:
+                    result[y, x] = m
 
             # Gradient direction ≈ 45 degrees
             elif a < 67.5:
-                m1 = magnitude[y - 1, x + 1]
-                m2 = magnitude[y + 1, x - 1]
+                m1 = magnitude[y + 1, x + 1]
+                m2 = magnitude[y - 1, x - 1]
+                # Keep only local maxima
+                if m > m1 and m > m2:
+                    result[y, x] = m
 
             # Gradient direction ≈ 90 degrees
             elif a < 112.5:
                 m1 = magnitude[y - 1, x]
                 m2 = magnitude[y + 1, x]
+                # Keep only local maxima
+                if m > m1 and m >= m2:
+                    result[y, x] = m
 
             # Gradient direction ≈ 135 degrees
             else:
-                m1 = magnitude[y - 1, x - 1]
-                m2 = magnitude[y + 1, x + 1]
-
-            # Keep only local maxima
-            if m >= m1 and m >= m2:
-                result[y, x] = m
+                m1 = magnitude[y + 1, x - 1]
+                m2 = magnitude[y - 1, x + 1]
+                # Keep only local maxima
+                if m > m1 and m > m2:
+                    result[y, x] = m
 
     return result
 
@@ -85,38 +93,36 @@ def hysteresis(image, low_threshold, high_threshold):
     return result
 
 
-def simple_canny(image, low_threshold, high_threshold):
+def simple_canny(image, low_threshold, high_threshold, L2gradient=False):
 
-    # -------------------------------------------------
-    # 1. Noise reduction
-    # -------------------------------------------------
-
-    blurred = cv2.GaussianBlur(
-        image,
-        (5, 5),
-        1.0
-    )
+    # 1. Gaussian blur
+    # OpenCV implementation actually does not include blurring
 
     # -------------------------------------------------
     # 2. Image gradients
     # -------------------------------------------------
 
     gx = cv2.Sobel(
-        blurred,
-        cv2.CV_32F,
+        image,
+        cv2.CV_16S,
         1, 0,
-        ksize=3
-    )
+        ksize=3,
+        borderType=cv2.BORDER_REPLICATE
+    ).astype(np.float32)
 
     gy = cv2.Sobel(
-        blurred,
-        cv2.CV_32F,
+        image,
+        cv2.CV_16S,
         0, 1,
-        ksize=3
-    )
+        ksize=3,
+        borderType=cv2.BORDER_REPLICATE
+    ).astype(np.float32)
 
     # Gradient magnitude
-    magnitude = np.sqrt(gx**2 + gy**2)
+    if L2gradient:
+        magnitude = np.sqrt(gx**2 + gy**2)
+    else:
+        magnitude = np.abs(gx) + np.abs(gy)
 
     # Gradient direction
     angle = np.arctan2(gy, gx)
