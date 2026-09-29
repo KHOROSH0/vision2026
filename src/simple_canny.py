@@ -57,10 +57,7 @@ def hysteresis(image, low_threshold, high_threshold):
 
     strong = image >= high_threshold
 
-    weak = (
-        (image >= low_threshold) &
-        (image < high_threshold)
-    )
+    weak = (image >= low_threshold) & (image < high_threshold)
 
     # Strong pixels are immediately accepted
     result[strong] = 255
@@ -68,11 +65,7 @@ def hysteresis(image, low_threshold, high_threshold):
     # Start search from all strong pixels
     stack = list(zip(*np.nonzero(strong)))
 
-    neighbors = [
-        (-1, -1), (-1, 0), (-1, 1),
-        ( 0, -1),          ( 0, 1),
-        ( 1, -1), ( 1, 0), ( 1, 1)
-    ]
+    neighbors = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
     while stack:
         y, x = stack.pop()
@@ -103,19 +96,11 @@ def simple_canny(image, low_threshold, high_threshold, L2gradient=False):
     # -------------------------------------------------
 
     gx = cv2.Sobel(
-        image,
-        cv2.CV_16S,
-        1, 0,
-        ksize=3,
-        borderType=cv2.BORDER_REPLICATE
+        image, cv2.CV_16S, 1, 0, ksize=3, borderType=cv2.BORDER_REPLICATE
     ).astype(np.float32)
 
     gy = cv2.Sobel(
-        image,
-        cv2.CV_16S,
-        0, 1,
-        ksize=3,
-        borderType=cv2.BORDER_REPLICATE
+        image, cv2.CV_16S, 0, 1, ksize=3, borderType=cv2.BORDER_REPLICATE
     ).astype(np.float32)
 
     # Gradient magnitude
@@ -131,19 +116,12 @@ def simple_canny(image, low_threshold, high_threshold, L2gradient=False):
     # 3. Non-maximum suppression
     # -------------------------------------------------
 
-    nms = non_maximum_suppression(
-        magnitude,
-        angle
-    )
+    nms = non_maximum_suppression(magnitude, angle)
 
     # -------------------------------------------------
     # 4 + 5. Double threshold + hysteresis
     # -------------------------------------------------
 
-    edges = hysteresis(
-        nms,
-        low_threshold,
-        high_threshold
-    )
+    edges = hysteresis(nms, low_threshold, high_threshold)
 
     return edges
