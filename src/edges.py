@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 from simple_canny import simple_canny
 
-image = cv2.imread("../resources/kidsnoise.bmp")
+# image = cv2.imread("../resources/kidsnoise.bmp")
+image = cv2.imread("../resources/figures.png")
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 filtered = cv2.medianBlur(gray, 3)
 
@@ -21,9 +22,9 @@ def update(_):
 window = "Simple | Opencv"
 cv2.namedWindow(window)
 
-cv2.createTrackbar("Low", window, 100, 255, update)
+cv2.createTrackbar("Low", window, 270, 2040, update)
 
-cv2.createTrackbar("High", window, 200, 255, update)
+cv2.createTrackbar("High", window, 300, 2040, update)
 
 update(0)
 
