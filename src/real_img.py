@@ -2,7 +2,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-image = cv2.imread("kidsnoise.bmp")
+image = cv2.imread("resources/kidsnoise.bmp")
+
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 ## the same effect:
 # image = np.flip(image, 2)
@@ -29,12 +30,11 @@ print("Gray Data type:", gray.dtype)
 # plt.figure("orig")
 # plt.imshow(image)
 
-# plt.figure("grayscale")
-# plt.imshow(gray, cmap="gray", vmin=0, vmax=255)
-
-# # plt.figure("blurred")
-# # plt.imshow(blurred, cmap="gray", vmin=0, vmax=255)
-
+plt.figure("grayscale")
+plt.imshow(gray, cmap="gray", vmin=0, vmax=255)
+plt.figure("blurred")
+plt.imshow(blurred, cmap="gray", vmin=0, vmax=255)
+plt.show()
 # plt.figure("gauss blurred")
 # plt.imshow(gauss_blur, cmap="gray", vmin=0, vmax=255)
 
