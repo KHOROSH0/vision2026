@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 from simple_canny import simple_canny
 
-# image = cv2.imread("../resources/kidsnoise.bmp")
-image = cv2.imread("../resources/figures.png")
+image = cv2.imread("resources/figures.png")
+#image = cv2.imread("resources/figures.png")
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 filtered = cv2.medianBlur(gray, 3)
 

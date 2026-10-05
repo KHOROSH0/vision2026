@@ -1,0 +1,146 @@
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+import random 
+from simple_canny import simple_canny
+from collections import deque
+
+
+def calc_neighbours(edges):
+    matrix = []
+    row = []
+    element = []
+    coordinate_of_element = []
+    n,m = edges.shape
+    for i in range(n):
+        for j in range(m):
+            if (edges[i][j] > 250):
+                if (j - 1 >=0 and (edges[i][j-1] > 250)): # into map
+                    coordinate_of_element.append(i)
+                    coordinate_of_element.append(j-1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+
+                #down
+                if (i - 1 >=0 and (edges[i - 1][j] > 250)): # into map
+                    coordinate_of_element.append(i-1)
+                    coordinate_of_element.append(j)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                #right
+                if (j + 1 <m and (edges[i][j+1] > 250)): # into map
+                    coordinate_of_element.append(i)
+                    coordinate_of_element.append(j+1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                #up
+                if (i + 1 <n and (edges[i + 1][j] > 250)): # into map
+                    coordinate_of_element.append(i+1)
+                    coordinate_of_element.append(j)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                #left up
+                if ((i -1 >=0 and j + 1 < m) and (edges[i -1][j + 1] > 250)): # into map
+                    coordinate_of_element.append(i-1)
+                    coordinate_of_element.append(j+1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                # left down
+                if ((i - 1 >=0 and j - 1 >=0) and (edges[i - 1][j - 1] > 250)): # into map
+                    coordinate_of_element.append(i-1)
+                    coordinate_of_element.append(j-1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                # right down
+                if ((i + 1 <n and j-1 >=0) and (edges[i + 1][j - 1] > 250)): # into map
+                    coordinate_of_element.append(i+1)
+                    coordinate_of_element.append(j - 1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                # right up
+                if ((i + 1 <n and j + 1 < m) and (edges[i + 1][j + 1] > 250)): # into map
+                    coordinate_of_element.append(i+1)
+                    coordinate_of_element.append(j+1)
+                    element.append(coordinate_of_element.copy())
+                    coordinate_of_element.clear()
+                # add element                                            
+            row.append(element.copy())
+            element.clear()
+        # add row of elements
+        matrix.append(row.copy())
+        row.clear()
+    return matrix
+
+def bfs(neighbours, coord, visited):
+    q = deque()
+    graph = []
+    q.append(coord)
+    while (len(q) != 0):
+        v = q.popleft()
+        i,j = v
+        for k in neighbours[i][j]:
+            if (((k in visited) != True) and ((k in q )!= True)):
+                q.append(k)
+                
+        graph.append(v)
+        visited.append(v)
+    return graph
+def get_contours(img):
+    # using canny_detector 
+    low = 50
+    high = 200
+    edges_approx = simple_canny(img, low, high)
+    #edges_approx = img
+    n,m = edges_approx.shape
+    # for each coordinate we calculate it's nighboors
+    neighbours = calc_neighbours(edges_approx)
+    visited = []
+    forest = []
+    for i in range(n):
+        for j in range(m):
+            if ([i,j] in visited) or edges_approx[i][j] < 100:
+                continue
+            else:
+                # fonded a new tree
+                coord = [i,j]
+                tree = bfs(neighbours=neighbours, coord=coord, visited=visited)
+                forest.append(tree.copy())
+                tree.clear()
+    return forest
+
+def main():
+    image = cv2.imread("resources/figures.png")
+    
+    # convert to gray image
+    img_u16 = image.astype(np.uint16)
+    gray = (img_u16[:,:,0] + img_u16[:,:,1] + img_u16[:,:,2]) // 3
+    gray = gray.astype(np.uint8)
+    # filtering an image
+    filtered_gray = cv2.medianBlur(gray, 3)
+    #matrix = np.array([
+    #[0, 255, 255, 255, 255, 255, 255, 255, 255, 0],
+    #[255,   0,   0,   0,   0,   0,   0,   0,   0, 255],
+    #[255,   0, 255, 255, 255, 255, 255, 255,   0, 255],
+    #[255,   0, 255,   0,   0,   0,   0, 255,   0, 255],
+    #[255,   0, 255,   0, 255, 255,   0, 255,   0, 255],
+    #[255,   0, 255,   0, 255, 255,   0, 255,   0, 255],
+    #[255,   0, 255,   0,   0,   0,   0, 255,   0, 255],
+    #[255,   0, 0, 255, 255, 255, 255, 255,   0, 255],
+    #[255,   0,   0,   0,   0,   0,   0,   0,   0, 255],
+    #[0, 255, 255, 255, 255, 255, 255, 255, 255, 255],
+    #])
+    list__ = get_contours(gray)
+    for row in (list__):
+        print(row)
+        print('\n')
+    # create an image
+    image_test = np.zeros((gray.shape[0], gray.shape[1]))
+    for i in range(gray.shape[0]):
+        for j in range(gray.shape[1]):
+            coord = [i,j]
+            if ((coord in list__[0]) == True):
+                image_test[i][j] = 255
+    plt.imshow(image_test, cmap="gray", vmin=0, vmax=255)
+    plt.show()
+if __name__ == "__main__":
+    main()

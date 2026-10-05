@@ -94,7 +94,6 @@ def simple_canny(image, low_threshold, high_threshold, L2gradient=False):
     # -------------------------------------------------
     # 2. Image gradients
     # -------------------------------------------------
-
     gx = cv2.Sobel(
         image, cv2.CV_16S, 1, 0, ksize=3, borderType=cv2.BORDER_REPLICATE
     ).astype(np.float32)
