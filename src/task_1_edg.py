@@ -14,7 +14,9 @@ def calc_neighbours(edges):
     n,m = edges.shape
     for i in range(n):
         for j in range(m):
+            
             if (edges[i][j] > 250):
+                #left
                 if (j - 1 >=0 and (edges[i][j-1] > 250)): # into map
                     coordinate_of_element.append(i)
                     coordinate_of_element.append(j-1)
@@ -87,7 +89,7 @@ def bfs(neighbours, coord, visited):
     return graph
 def get_contours(img):
     # using canny_detector 
-    low = 50
+    low = 100
     high = 200
     edges_approx = simple_canny(img, low, high)
     #edges_approx = img
@@ -138,7 +140,7 @@ def main():
     for i in range(gray.shape[0]):
         for j in range(gray.shape[1]):
             coord = [i,j]
-            if ((coord in list__[0]) == True):
+            if ((coord in list__[1]) == True):
                 image_test[i][j] = 255
     plt.imshow(image_test, cmap="gray", vmin=0, vmax=255)
     plt.show()
