@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from simple_canny import simple_canny
 from connected_components import connected_components, component_area
+from contour_simplification import order_contour, rdp
 
 def draw_components_random_colors(image, components):
     result = image.copy()
@@ -32,6 +33,14 @@ for component in components:
     area_fact = component_area(component, edges_approx.shape)
     print(f's_f = {area_fact}')
     perimeter = len(component)
+
+    contour = order_contour(component)
+    polygon = rdp(contour, epsilon=0.02*perimeter)
+    print(f'RDP vertices ({len(polygon)}): {polygon}')
+    if len(polygon) == 4:
+        cv2.polylines(contours_img, [np.array(polygon, dtype=np.int32)],
+                        isClosed=True, color=(255, 0, 0), thickness=2)
+            
     a = (perimeter + 4)/4
     area_theor = a**2
     print(f's_t = {area_theor}')
