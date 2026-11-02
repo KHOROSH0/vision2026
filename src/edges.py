@@ -22,9 +22,9 @@ def update(_):
 window = "Simple | Opencv"
 cv2.namedWindow(window)
 
-cv2.createTrackbar("Low", window, 270, 2040, update)
+cv2.createTrackbar("Low", window, 270, 1020, update)
 
-cv2.createTrackbar("High", window, 300, 2040, update)
+cv2.createTrackbar("High", window, 300, 1020, update)
 
 update(0)
 

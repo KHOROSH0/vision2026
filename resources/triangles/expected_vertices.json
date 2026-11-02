@@ -1,0 +1,110 @@
+[
+  {
+    "image": "figures_triangle_000.png",
+    "clockwise_rotation_degrees": 0,
+    "vertices_1_2_3": [
+      [
+        490,
+        210
+      ],
+      [
+        555,
+        375
+      ],
+      [
+        425,
+        375
+      ]
+    ]
+  },
+  {
+    "image": "figures_triangle_045.png",
+    "clockwise_rotation_degrees": 45,
+    "vertices_1_2_3": [
+      [
+        561,
+        239
+      ],
+      [
+        490,
+        402
+      ],
+      [
+        398,
+        310
+      ]
+    ]
+  },
+  {
+    "image": "figures_triangle_090.png",
+    "clockwise_rotation_degrees": 90,
+    "vertices_1_2_3": [
+      [
+        590,
+        310
+      ],
+      [
+        425,
+        375
+      ],
+      [
+        425,
+        245
+      ]
+    ]
+  },
+  {
+    "image": "figures_triangle_150.png",
+    "clockwise_rotation_degrees": 150,
+    "vertices_1_2_3": [
+      [
+        540,
+        397
+      ],
+      [
+        401,
+        286
+      ],
+      [
+        514,
+        221
+      ]
+    ]
+  },
+  {
+    "image": "figures_triangle_225.png",
+    "clockwise_rotation_degrees": 225,
+    "vertices_1_2_3": [
+      [
+        419,
+        381
+      ],
+      [
+        490,
+        218
+      ],
+      [
+        582,
+        310
+      ]
+    ]
+  },
+  {
+    "image": "figures_triangle_300.png",
+    "clockwise_rotation_degrees": 300,
+    "vertices_1_2_3": [
+      [
+        403,
+        260
+      ],
+      [
+        579,
+        286
+      ],
+      [
+        514,
+        399
+      ]
+    ]
+  }
+]
