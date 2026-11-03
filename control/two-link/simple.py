@@ -7,7 +7,7 @@ guiFlag = False
 
 dt = 1/240 # pybullet simulation step
 th0 = 0.0  # starting position (radian)
-kp = 5.0  # proportional coefficient
+kp = 1.0  # proportional coefficient
 
 L = 0.8    # m
 L1 = L
@@ -18,21 +18,12 @@ zd = 1
 
 physicsClient = p.connect(p.GUI if guiFlag else p.DIRECT) # or p.DIRECT for non-graphical version
 p.setGravity(0,0,-10)
-# planeId = p.loadURDF("plane.urdf")
 boxId = p.loadURDF("./two-link.urdf.xml", useFixedBase=True)
-
-# get rid of all the default damping forces
-# think of it as imagined "air drag"
-p.changeDynamics(boxId, 1, linearDamping=0, angularDamping=0)
-p.changeDynamics(boxId, 2, linearDamping=0, angularDamping=0)
 
 # go to the starting position
 p.setJointMotorControl2(bodyIndex=boxId, jointIndex=1, targetPosition=th0, controlMode=p.POSITION_CONTROL)
 for _ in range(1000):
     p.stepSimulation()
-
-# turn off the motor for the free motion
-p.setJointMotorControl2(bodyIndex=boxId, jointIndex=1, targetVelocity=0, controlMode=p.VELOCITY_CONTROL, force=0)
 
 pos0 = p.getLinkState(boxId, 4)[0]
 X0 = np.array([[pos0[0]],[pos0[2]]])
@@ -99,16 +90,4 @@ plt.show()
 # Th = (th1, th2)'
 # dX = J(Th) * dTh
 # dTh = inv(J) * dX
-# dX = k(Xd - X)
-
-# parametrization
-# X(0) = X0
-# X(1) = Xd
-# X(s) = X0 + s*(Xd-X0)
-# s [0, 1]
-# s(t)
-
-# X(0) = X0
-# X(T) = Xd
-# dX(0) = 0
-# dx(T) = 0
+# dX = -k * (X - Xd)
